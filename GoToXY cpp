@@ -1,0 +1,12 @@
+//funcion GoToXY para imprecion en coordenadas de consola
+
+void GoToXY(int x, int y)
+{  
+    //GoToXY para identificacion de pocision en consola
+    HANDLE hCon;  //se llama a el identificador identificado con el comando HANDLE
+    hCon = GetStdHandle(STD_OUTPUT_HANDLE);
+    COORD dwPos;
+    dwPos.X = x;
+    dwPos.Y = y;
+    SetConsoleCursorPosition(hCon, dwPos);
+}
