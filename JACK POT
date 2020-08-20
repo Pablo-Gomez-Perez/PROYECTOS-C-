@@ -1,0 +1,477 @@
+#include<Windows.h>
+#include<conio.h>
+#include<stdlib.h>
+#include<iostream>
+#include<time.h>
+
+
+using namespace std;
+
+//declaracion de funciones
+    void GoToXY(); bool AjustarVentana(); void welcome(); void marcos(); void menu(); void ingreso();
+    void errors(); void juego(); void juego_mat(); void informacion(); void ganaste(); void perdiste();
+
+//
+
+//variables publicas
+    char usuario[30];
+//
+
+bool AjustarVentana(int Ancho, int Alto)
+{
+	_COORD Coordenada;
+	Coordenada.X = Ancho;
+	Coordenada.Y = Alto;
+
+	_SMALL_RECT Rect;
+	Rect.Top = 0;
+	Rect.Left = 0;
+	Rect.Right = Ancho - 1;
+	Rect.Bottom = Alto - 1;
+
+	// Obtener el handle de la consola
+	HANDLE hConsola = GetStdHandle(STD_OUTPUT_HANDLE);
+
+	// Ajustar el buffer al nuevo tamaño
+	SetConsoleScreenBufferSize(hConsola, Coordenada);
+
+	// Cambiar tamaño de consola a lo especificado en el buffer
+	SetConsoleWindowInfo(hConsola, TRUE, &Rect);
+	return TRUE;
+}
+
+void GoToXY(int x, int y){  //GoToXY para identificacion de pocision en consola
+
+    HANDLE hCon;  //se llama a el identificador identificado con el comando HANDLE
+    hCon = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    COORD dwPos;
+    dwPos.X = x;
+    dwPos.Y = y;
+    SetConsoleCursorPosition(hCon, dwPos);
+
+
+}
+
+void marcos(){
+
+    //procedimiento para el dibujado de marcos dentro de la consola 
+
+    //dibujado de lineas horizontales
+    for(int i = 2; i < 148; i++){
+
+        GoToXY(i,3); printf("%c", 178);
+        GoToXY(i,38); printf("%c", 178);
+
+    }
+
+    //dibujado de lineas verticales
+    for(int i = 4; i < 38; i++){
+        
+        GoToXY(2,i); printf("%c", 178);
+        GoToXY(3,i); printf("%c", 178);
+        GoToXY(147,i); printf("%c", 178);
+        GoToXY(146,i); printf("%c", 178);
+
+    }
+
+}
+
+void errors(){
+
+    //VENTANA DE CUADRO PARA ERRORES
+    system("cls");
+    system("color 0C");
+    marcos();
+
+    for(int i = 4; i < 146; i++){
+        //lineas horizontales
+        GoToXY(i,4); printf("%c", 219);
+        GoToXY(i,5); printf("%c", 219);
+        GoToXY(i,6); printf("%c", 219);
+        GoToXY(i,7); printf("%c", 219);
+
+        GoToXY(i,34); printf("%c", 219);
+        GoToXY(i,35); printf("%c", 219);
+        GoToXY(i,36); printf("%c", 219);
+        GoToXY(i,37); printf("%c", 219);
+
+    }
+
+    //lineas verticales
+    for(int i = 4; i < 34; i++){
+
+        GoToXY(4,i); printf("%c", 219);
+        GoToXY(5,i); printf("%c", 219);
+
+        GoToXY(144,i); printf("%c", 219);
+        GoToXY(145,i); printf("%c", 219);
+
+    }
+
+    GoToXY(47,11); cout<<"|  ******  ******   ******    ***    ******  |";
+    GoToXY(47,12); cout<<"|  **      **   **  **   **  ** **   **   ** |";
+    GoToXY(47,13); cout<<"|  ****    **  **   **  **  **   **  **  **  |";
+    GoToXY(47,14); cout<<"|  **      *****    *****    ** **   *****   |";
+    GoToXY(47,15); cout<<"|  ******  **  **   **  **    ***    **  **  |";
+
+    GoToXY(40,20); cout<<"+============================================================+";
+    GoToXY(40,21); cout<<"|     EL COMANDO EJECUTADO POR EL USUARIO NO ESTA  DENTRO    |";
+    GoToXY(40,22); cout<<"|     DEL RANGO DE  OPCIONES O NO HA SIDO DEFINIDA POR EL    |";
+    GoToXY(40,23); cout<<"|     SISTEMA                                                |";
+    GoToXY(40,24); cout<<"+============================================================+";
+    GoToXY(40,25); cout<<"|     ERROR DE ACCESIBILIDAD INTENTE DE NUEVO                |";
+    GoToXY(40,26); cout<<"+============================================================+";
+
+    GoToXY(60,33); cout<<"*"; system("pause");
+
+
+
+}
+
+void welcome(){
+
+    //cabecera de bienvenida del juego
+    system("color 0A");
+
+    marcos();
+
+    GoToXY(35,14); cout<<("#################################################################################");
+    GoToXY(35,15); cout<<("#    ******      ******       *******   **  **       *****       ***    *****   #");
+    GoToXY(35,16); cout<<("#      **       ***  ***     *****      ** **        **  **     ** **   **  **  #");
+    GoToXY(35,17); cout<<("#  **  **      ***    ***   ***         ****         **  **    **   **  **   ** #");
+    GoToXY(35,18); cout<<("#   *****     ************   *****      ** **        *****      ** **   **  **  #");
+    GoToXY(35,19); cout<<("#    ***     ***       ****   *******   **  **       **          ***    *****   #");
+    GoToXY(35,20); cout<<("#################################################################################");
+
+    cout<<endl;
+    cout<<endl;
+    cout<<endl;
+
+}
+
+void menu(){
+    //codigo para menú de opciones
+    int respuesta = 0;
+
+    do{
+
+        system("cls");
+        system("color 0D");
+        marcos();
+
+        for(int i = 4; i < 146; i++){
+        //lineas horizontales
+        GoToXY(i,4); printf("%c", 219);
+        GoToXY(i,5); printf("%c", 219);
+        GoToXY(i,6); printf("%c", 219);
+        GoToXY(i,7); printf("%c", 219);
+
+        GoToXY(i,34); printf("%c", 219);
+        GoToXY(i,35); printf("%c", 219);
+        GoToXY(i,36); printf("%c", 219);
+        GoToXY(i,37); printf("%c", 219);
+
+    }
+
+        //listado de menu principal;
+        GoToXY(20,12); cout<<"+==========================================================================================================+";
+        GoToXY(20,13); cout<<"|                                                                                                          |";
+        GoToXY(20,14); cout<<"|     +==============================================================================================+     |";
+        GoToXY(20,15); cout<<"|     |                                        MENU PRINCIPAL                                        |     |";
+        GoToXY(20,16); cout<<"|     +==============================================================================================+     |";
+        GoToXY(20,17); cout<<"|     | INGRESA TU NOMBRE DE USUARIO   |                                                             |     |";
+        GoToXY(20,18); cout<<"|     +==============================================================================================+     |";
+        GoToXY(20,19); cout<<"|     |                                           OPCIONES                                           |     |";
+        GoToXY(20,20); cout<<"|     |----------------------------------------------------------------------------------------------|     |";
+        GoToXY(20,21); cout<<"|     |   1.-  JUEGO NORMAL   |   2.- DESAFIO MATEMATICO   |    3.- INFORMACION    |     4. SALIR    |     |";
+        GoToXY(20,22); cout<<"|     |----------------------------------------------------------------------------------------------|     |";
+        GoToXY(20,23); cout<<"|     | INGRESA LA OPCION DESEADA     |                                                              |     |";
+        GoToXY(20,24); cout<<"|     +==============================================================================================+     |";
+        GoToXY(20,25); cout<<"|                                                                                                          |";
+        GoToXY(20,26); cout<<"+==========================================================================================================+";
+        GoToXY(20,27); cout<<"|                   [INGRESE DENTRO DEL RECUADRO EL NUMERO DE LA OPCION DESEADA]                           |";
+        GoToXY(20,28); cout<<"+==========================================================================================================+";
+
+        //GoToXY(65,17); cin>>usuario;
+        GoToXY(65,23); cin>>respuesta;
+
+        if((respuesta < 1) || (respuesta > 4)){
+            errors();
+        }
+
+    }while((respuesta < 1) || (respuesta > 4));
+
+    switch(respuesta){
+        case 1: 
+            juego(); 
+            break;
+        case 2:
+            juego_mat();
+            break;
+        case 3:
+            informacion();
+            break;
+        case 4:
+            break;
+        default: errors();
+    }
+
+    GoToXY(65,35); cout<<"'";
+
+}
+
+void ingreso(){
+
+    int pass = 0, passed = 1234;
+
+    //control de contraseña para acceso al juego
+    do{
+
+        system("cls");
+
+        welcome();
+
+        GoToXY(70,22); cout<<"ACCESANDO";
+        
+        //linea divisoria
+        for(int i = 4; i < 146; i++){
+
+            GoToXY(i,24); printf("%c", 219);
+            GoToXY(i,25); printf("%c", 219);
+            GoToXY(i,26); printf("%c", 219);
+            GoToXY(i,27); printf("%c", 219);
+
+        }
+
+        GoToXY(43,30); cout<<"+=============================================================+";
+        GoToXY(43,31); cout<<"|                     CONTROL DE ACCESO                       |";
+        GoToXY(43,32); cout<<"+=============================================================+";
+        GoToXY(43,33); cout<<"|  CLAVE ACCESO   |                                           |";
+        GoToXY(43,34); cout<<"+=============================================================+";
+
+        GoToXY(65,33); cin>>pass;
+
+        if(passed != pass){
+            errors();
+        }
+        else{
+            menu();
+        }
+
+    }while(passed != pass);
+
+
+}
+
+void juego(){
+
+    int respuesta = 0, intentos = 0, aleatorio = 0, Numero_juego, vidas = 10;
+
+    do{
+
+        system("cls");
+        system("color 0A");
+        marcos();
+
+        GoToXY(20,10); cout<<"+==========================================================================================================+";
+        GoToXY(20,11); cout<<"|                                                                                                          |";
+        GoToXY(20,12); cout<<"|     +==============================================================================================+     |";
+        GoToXY(20,13); cout<<"|     |                                        HORA DEL JUEGO                                        |     |";
+        GoToXY(20,14); cout<<"|     +==============================================================================================+     |";
+        GoToXY(20,15); cout<<"|     |     SERA GENERADO DE MANERA ALEATORIA UN NUMERO ENTRE EL '1' Y EL '100' CON UN MAXIMO DE     |     |";
+        GoToXY(20,16); cout<<"|     |     10 INTENTOS, SI ACERTAS YA GANASTES, SI NO PUES YA FUISTE COMPA                          |     |";
+        GoToXY(20,17); cout<<"|     +==============================================================================================+     |";
+        GoToXY(20,18); cout<<"|                                                                                                          |";
+        GoToXY(20,19); cout<<"+==========================================================================================================+";
+
+        srand(time(NULL));      //esto genera un numero aleatorio
+
+        GoToXY(20,22); cout<<"+==========================================================================================================+";
+        GoToXY(20,23); cout<<"|    INGRESA NUMERO   |                     RESULTADO                                       |     VIDAS    |";
+        GoToXY(20,24); cout<<"+__________________________________________________________________________________________________________+";
+        GoToXY(20,25); cout<<"|                     |                                                                     |              |";
+        GoToXY(20,26); cout<<"+==========================================================================================================+";
+
+        do{
+
+            GoToXY(22,25); cout<<"_____";
+            GoToXY(22,25); cin>>Numero_juego;   //se ingresa el numero posible
+
+            if(Numero_juego > aleatorio){
+                GoToXY(45,25); cout<<"No, intenta con un numero mas chico";
+            }
+            else if(Numero_juego < aleatorio){
+                GoToXY(45,25); cout<<"No, Intenta con un numero mas grande";
+            }
+
+            intentos ++;
+            vidas --;
+
+            GoToXY(115,25); cout<<vidas;
+
+            if(Numero_juego == aleatorio){
+                GoToXY(45,25); cout<<"GENIAL, HAS GANADO "<<aleatorio<<" ES EL CORRECTO";
+                ganaste();
+            }
+            else if(vidas == 0){
+                GoToXY(45,25); cout<<"LO SIENTO, SE HAN AGOTADO LOS INTENTOS";
+            }
+
+        }while((Numero_juego > aleatorio) || (Numero_juego < aleatorio) && (intentos < 10));
+
+        do{
+
+            GoToXY(20,28); cout<<"+==========================================================================================================+";
+            GoToXY(20,29); cout<<"|                                         CONTINUAR JUGANDO  ???                                           |";
+            GoToXY(20,30); cout<<"+==========================================================================================================+";
+            GoToXY(20,31); cout<<"|          1.- CONTINUAR CON UN NUEVO JUEGO        |       2.-   REGRESAR AL MENU PRINCIPAL                |";
+            GoToXY(20,32); cout<<"+==========================================================================================================+";
+            GoToXY(20,33); cout<<"|    INGRESA EL NUMERO DE LA OPCION DESEADA        |                                                       |";
+            GoToXY(20,34); cout<<"+==========================================================================================================+";
+
+            GoToXY(80,33); cout<<"  ";
+            GoToXY(80,33); cin>>respuesta;
+
+            switch(respuesta){
+                case 1:
+                    intentos = 0;
+                    vidas = 10;
+                    break;
+                case 2:
+                    menu();
+                    break;
+                default:
+                    errors();
+                break;
+            }
+
+        }while((respuesta < 1) || (respuesta > 2));
+    
+    }while(respuesta == 1);
+
+
+
+}
+
+void juego_mat(){
+
+    system("cls");
+    system("color 0C");
+    marcos();
+
+    for(int i = 4; i < 146; i++){
+
+        //lineas horizontales
+        GoToXY(i,4); printf("%c", 219);
+        GoToXY(i,5); printf("%c", 219);
+        GoToXY(i,6); printf("%c", 219);
+        GoToXY(i,7); printf("%c", 219);
+
+        GoToXY(i,34); printf("%c", 219);
+        GoToXY(i,35); printf("%c", 219);
+        GoToXY(i,36); printf("%c", 219);
+        GoToXY(i,37); printf("%c", 219);
+    
+    }
+
+    GoToXY(20,15); cout<<"+==========================================================================================================+";
+    GoToXY(20,16); cout<<"|                                                                                                          |";
+    GoToXY(20,17); cout<<"+==========================================================================================================+";
+    GoToXY(20,18); cout<<"|                                          NO DISPONIBLE AUN                                               |";
+    GoToXY(20,19); cout<<"+==========================================================================================================+";
+    GoToXY(20,20); cout<<"|                                                                                                          |";
+    GoToXY(20,21); cout<<"+==========================================================================================================+";
+
+    GoToXY(50,27); cout<<"-"; system("pause");
+    menu();
+
+}
+
+void informacion(){
+
+    system("cls");
+    system("color 0C");
+    marcos();
+
+    for(int i = 4; i < 146; i++){
+        
+        //lineas horizontales
+        GoToXY(i,4); printf("%c", 219);
+        GoToXY(i,5); printf("%c", 219);
+        GoToXY(i,6); printf("%c", 219);
+        GoToXY(i,7); printf("%c", 219);
+
+        GoToXY(i,34); printf("%c", 219);
+        GoToXY(i,35); printf("%c", 219);
+        GoToXY(i,36); printf("%c", 219);
+        GoToXY(i,37); printf("%c", 219);
+    
+    }
+
+    GoToXY(20,15); cout<<"+==========================================================================================================+";
+    GoToXY(20,16); cout<<"|                                                                                                          |";
+    GoToXY(20,17); cout<<"+==========================================================================================================+";
+    GoToXY(20,18); cout<<"|                                          NO DISPONIBLE AUN                                               |";
+    GoToXY(20,19); cout<<"+==========================================================================================================+";
+    GoToXY(20,20); cout<<"|                                                                                                          |";
+    GoToXY(20,21); cout<<"+==========================================================================================================+";
+
+    GoToXY(50,27); cout<<"-"; system("pause");
+    menu();
+
+}
+
+void ganaste(){
+
+    system("cls");
+    system("color 0A");
+    marcos();
+
+
+    GoToXY(40,10); cout<<"  *****         ***       ****    **      ***       *****       ***     *****  ";
+    GoToXY(40,11); cout<<" ***  ***      ** **      ** **   **     ** **      **  **     ** **    **  ** ";
+    GoToXY(40,12); cout<<"**            **   **     **  **  **    **   **     **   **   **   **   **   **";
+    GoToXY(40,13); cout<<"***  *****   *********    **   ** **   *********    **   **  **     **  ** *** ";
+    GoToXY(40,14); cout<<" ***   ***  **       **   **    ****  **       **   **  **    **   **   **  ** ";
+    GoToXY(40,15); cout<<"   *****   **         **  **     *** **         **  *****      *****    **   **";
+
+
+    for(int i = 4; i < 146; i++){
+        
+        //lineas horizontales
+        GoToXY(i,4); system("color 06"); printf("%c", 219);
+        GoToXY(i,5); system("color 0A"); printf("%c", 219);
+        GoToXY(i,36); printf("%c", 219);
+        GoToXY(i,37); printf("%c", 219);
+        
+    
+    }
+
+    for(int i = 4; i < 38; i++){
+
+        GoToXY(4,i); printf("%c", 219);
+        GoToXY(145,i); printf("%c", 219);
+
+    }
+
+}
+
+void perdiste(){
+
+}
+
+int main(){
+
+    AjustarVentana(150,40);
+    ingreso();
+    //errors();
+    //menu();
+    //juego();
+    //ganaste();
+
+    GoToXY(70,38); system("pause>NULL");
+    return 0;
+
+}
+
