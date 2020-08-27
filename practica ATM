@@ -1,0 +1,514 @@
+/*
+	proyecto de ejercicio cajero automatico, la idea es que incluya matrices, cadenas de caracteres, operaciones logicas
+	y métodos de ordenamiento
+*/
+#include<cstdlib>
+#include<iostream>
+#include<Windows.h>
+#include<stdlib.h>
+#include<stdio.h>
+#include<string.h>
+
+
+using namespace std;
+
+//funciones
+    bool AjustarVentana(int Ancho, int Alto); void GoToXY(int x, int y); void menu(); void marcos(); void prestamo();
+    void acceso(); void errors(); void head(); void deposito_local(); void deposito_ex(); void retiros(); void edocta();
+    void cantidad_ex(); void calc(); void exito();
+//
+
+//VARIABLES DE TIPO PUBLICAS
+
+    double saldo = 10000;
+    double retiro = 0;
+    double deposito = 0;
+
+//
+
+int main(int argc, const char** argv)
+{
+    AjustarVentana(150, 40);
+    acceso();
+    //menu();
+    //cantidad_ex();
+    //retiros();
+    //exito();
+    //deposito_local();
+    //deposito_ex();
+    system("pause>NULL");
+    return 0;
+}
+
+bool AjustarVentana(int Ancho, int Alto)
+{
+    _COORD Coordenada;
+    Coordenada.X = Ancho;
+    Coordenada.Y = Alto;
+
+    _SMALL_RECT Rect;
+    Rect.Top = 0;
+    Rect.Left = 0;
+    Rect.Right = Ancho - 1;
+    Rect.Bottom = Alto - 1;
+
+    // Obtener el handle de la consola
+    HANDLE hConsola = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    // Ajustar el buffer al nuevo tamaño
+    SetConsoleScreenBufferSize(hConsola, Coordenada);
+
+    // Cambiar tamaño de consola a lo especificado en el buffer
+    SetConsoleWindowInfo(hConsola, TRUE, &Rect);
+    return TRUE;
+}
+
+void GoToXY(int x, int y) //GoToXY para identificacion de pocision en consola
+{
+    HANDLE hCon;  //se llama a el identificador identificado con el comando HANDLE
+    hCon = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    COORD dwPos;
+    dwPos.X = x;
+    dwPos.Y = y;
+    SetConsoleCursorPosition(hCon, dwPos);
+}
+
+void marcos() {
+    //dibujado de lineas horizontales
+    for (int i = 2; i < 148; i++)
+    {
+        GoToXY(i, 2); printf("%c", 219);
+        GoToXY(i, 38); printf("%c", 219);
+    }
+
+    //dibujado de lineas verticales
+    for (int i = 3; i < 38; i++)
+    {
+        GoToXY(2, i); printf("%c", 219);
+        GoToXY(3, i); printf("%c", 219);
+        GoToXY(147, i); printf("%c", 219);
+        GoToXY(146, i); printf("%c", 219);
+    }
+}
+
+
+void head()
+{
+    GoToXY(27,12); cout<<"##############################################################################################";
+    GoToXY(27,13); cout<<"#   ******          ****        ****      **     **********    ****             ********     #";
+    GoToXY(27,14); cout<<"#   **   **        **  **       ** **     **    *******       **  **             ******      #";
+    GoToXY(27,15); cout<<"#   **    **      **    **      **  **    **   *****         **    **              ***       #";
+    GoToXY(27,16); cout<<"#   *******      **********     **   **   **  *****         **      **             ***       #";
+    GoToXY(27,17); cout<<"#   **    **    ************    **    **  **   *****         **    **             *****      #";
+    GoToXY(27,18); cout<<"#   **   **    **          **   **     ** **    *******       **  **             *******     #";
+    GoToXY(27,19); cout<<"#   ******    **            **  **      ****     **********    ****             *********    #";
+    GoToXY(27,20); cout<<"##############################################################################################";
+}
+
+void errors(){
+
+    //VENTANA DE CUADRO PARA ERRORES
+    system("cls");
+    system("color 0C");
+    marcos();
+
+    for(int i = 3; i < 146; i++){
+        //lineas horizontales
+        GoToXY(i,3); printf("%c", 219);
+        GoToXY(i,4); printf("%c", 219);
+        GoToXY(i,5); printf("%c", 219);
+        GoToXY(i,6); printf("%c", 219);
+
+        GoToXY(i,34); printf("%c", 219);
+        GoToXY(i,35); printf("%c", 219);
+        GoToXY(i,36); printf("%c", 219);
+        GoToXY(i,37); printf("%c", 219);
+
+    }
+
+    //lineas verticales
+    for(int i = 4; i < 34; i++){
+
+        GoToXY(4,i); printf("%c", 219);
+        GoToXY(5,i); printf("%c", 219);
+
+        GoToXY(144,i); printf("%c", 219);
+        GoToXY(145,i); printf("%c", 219);
+
+    }
+
+    GoToXY(47,11); cout<<"|  ******  ******   ******    ***    ******  |";
+    GoToXY(47,12); cout<<"|  **      **   **  **   **  ** **   **   ** |";
+    GoToXY(47,13); cout<<"|  ****    **  **   **  **  **   **  **  **  |";
+    GoToXY(47,14); cout<<"|  **      *****    *****    ** **   *****   |";
+    GoToXY(47,15); cout<<"|  ******  **  **   **  **    ***    **  **  |";
+
+    GoToXY(40,20); cout<<"+============================================================+";
+    GoToXY(40,21); cout<<"|     EL COMANDO EJECUTADO POR EL USUARIO NO ESTA  DENTRO    |";
+    GoToXY(40,22); cout<<"|     DEL RANGO DE  OPCIONES O NO HA SIDO DEFINIDA POR EL    |";
+    GoToXY(40,23); cout<<"|     SISTEMA                                                |";
+    GoToXY(40,24); cout<<"+============================================================+";
+    GoToXY(40,25); cout<<"|     ERROR DE ACCESIBILIDAD INTENTE DE NUEVO                |";
+    GoToXY(40,26); cout<<"+============================================================+";
+
+}
+
+void exito()
+{
+    system("cls");
+    system("color 0A");
+    marcos();
+    head();
+
+    for(int i = 3; i < 146; i++){
+        //lineas horizontales
+        GoToXY(i,3); printf("%c", 219);
+        GoToXY(i,4); printf("%c", 219);
+        GoToXY(i,5); printf("%c", 219);
+        GoToXY(i,6); printf("%c", 219);
+
+        GoToXY(i,34); printf("%c", 219);
+        GoToXY(i,35); printf("%c", 219);
+        GoToXY(i,36); printf("%c", 219);
+        GoToXY(i,37); printf("%c", 219);
+
+    }
+
+    GoToXY(48,25); cout<<"+=====================================================+";
+    GoToXY(48,26); cout<<"|             MOVIMIENTO PROCESADO CON EXITO          |";
+    GoToXY(48,27); cout<<"+=====================================================+";
+
+}
+
+void menu()
+{
+    int respuesta = 0;
+
+    do
+    {
+        system("cls");
+        system("color 1F");
+        marcos();
+        head();
+
+        for(int i = 3; i < 146; i++)
+        {
+            //lineas horizontales
+            GoToXY(i,25); printf("%c", 219);
+            GoToXY(i,26); printf("%c", 219);
+        }
+
+        GoToXY(38,21); cout<<"+=========================================================================+";
+        GoToXY(38,22); cout<<"|   INGRESA EL NUMERO DE LA OPCION DESEADA    |                           |";
+        GoToXY(38,23); cout<<"+=========================================================================+";
+
+        GoToXY(27,28); cout<<"+==============================================================================================+";
+        GoToXY(27,29); cout<<"|  1  |  RETIRO DE EFECTIVO   |  2  |     DEPOSITO A CUENTA     |  3  | DEPOSITO A OTRA CUENTA |";
+        GoToXY(27,30); cout<<"+==============================================================================================+";
+        GoToXY(27,31); cout<<"|  4  | CONSULTAR MOVIMIENTOS |  5  |    SOLICITAR PRESTAMOS    |  6  |  SALIR DEL SISTEMA     |";
+        GoToXY(27,32); cout<<"|=====|     DE CUENTA         |=====|                           |=====|                        |";
+        GoToXY(27,33); cout<<"+==============================================================================================+";
+
+        GoToXY(90,22); cin>>respuesta;
+
+        //SELECCION DE OPCIONES
+            switch(respuesta)
+            {
+                case 1:
+                    retiros();
+                    menu();
+                    break;
+                case 2:
+                    deposito_local();
+                    menu();
+                    break;
+                case 3:
+                    deposito_ex();
+                    menu();
+                    break;
+                case 4:
+                    edocta();
+                    menu();
+                    break;
+                case 5:
+                    prestamo();
+                    menu();
+                    break;
+                case 6:
+                    acceso();
+                    break;
+                default : 
+                    errors(); 
+                    GoToXY(55,29);cout<<"*"; system("pause"); 
+                    menu(); 
+                    break;
+            }
+        //
+    }
+    while((respuesta < 1) || (respuesta > 6));
+
+}
+
+void acceso()
+{   
+    int ingreso = 1234;
+    int clave;
+
+    do
+    {
+        system("cls");
+        system("color 1F");
+        marcos();
+        head();
+
+        GoToXY(32,30); cout<<"+=================================================================================+";
+        GoToXY(32,31); cout<<"|                              INGRESA TU NIP                                     |";
+        GoToXY(32,32); cout<<"+=================================================================================+";
+        GoToXY(32,33); cout<<"|                                                                                 |";
+        GoToXY(32,34); cout<<"+=================================================================================+";
+
+        GoToXY(65,33); cin>>clave;
+
+        //en caso de que la clave esté mal
+            if(clave != ingreso)
+            {
+                errors();
+                GoToXY(40,28); cout<<"*"; system("pause");
+            }
+            else
+            {
+                menu();
+            }
+        //
+    }
+    while(clave != ingreso);
+}
+
+void calc(double saldo, double ret)
+{
+    if(saldo < ret)
+    {
+        errors();
+        GoToXY(40,24); cout<<"+============================================================+";
+        GoToXY(40,25); cout<<"|              NO HAY SALDO SUFICIENTE EN CUENTA             |";
+        GoToXY(40,26); cout<<"+============================================================+";
+        GoToXY(50,29); cout<<"*"; system("pause");
+        retiros();
+    }
+    else
+    {   
+        saldo = saldo - retiro;
+        exito();
+    }    
+}
+
+void retiros()      //procedimiento para los retiros de efectivo
+{
+    int respuesta = 0;
+
+    do
+    {
+        system("cls");
+        system("color 0A");
+        marcos();
+        head();
+
+        GoToXY(38,25); cout<<"+=========================================================================+";
+        GoToXY(38,26); cout<<"|   INGRESA EL NUMERO DE LA OPCION DESEADA    |                           |";
+        GoToXY(38,27); cout<<"+=========================================================================+";
+        GoToXY(27,28); cout<<"+==============================================================================================+===============+";
+        GoToXY(27,29); cout<<"|  1  |       $100.00         |  2  |            $500.00        |  3  |      $1,000.00         |===============|";
+        GoToXY(27,30); cout<<"+==============================================================================================| 7 | CANCELAR  |";
+        GoToXY(27,31); cout<<"|  4  |      $2,000.00        |  5  |           $5,000.00       |  6  |    OTRA CANTIDAD       |===============|";
+        GoToXY(27,32); cout<<"+==============================================================================================+===============+";
+
+        GoToXY(90,26); cin>>respuesta;
+
+        //SELECCION DE OPCIONES
+            switch(respuesta)
+            {
+                case 1:
+                    retiro = 100;
+                    break;
+                case 2:
+                    retiro = 500;
+                    break;
+                case 3:
+                    retiro = 1000;
+                    break;
+                case 4:
+                    retiro = 2000;
+                    break;
+                case 5:
+                    retiro = 5000;
+                    break;
+                case 6:
+                    cantidad_ex();
+                    break;
+                case 7:
+                    menu();
+                    break;
+                default : 
+                    errors();
+                    GoToXY(55,29); cout<<"*"; system("pause");
+                    menu(); 
+                    break;
+            }
+        //
+
+        calc(saldo,retiro);
+
+        GoToXY(40,34); cout<<"+============================================================+";
+        GoToXY(40,35); cout<<"|              NO HAY SALDO SUFICIENTE EN CUENTA             |";
+        GoToXY(40,36); cout<<"+============================================================+";
+
+    }
+    while((respuesta < 1) || (respuesta > 7));
+    
+}
+
+void cantidad_ex()
+{
+    system("cls");
+    system("color 0A");
+    marcos();
+    head();
+
+    GoToXY(38,25); cout<<"+=========================================================================+";
+    GoToXY(38,26); cout<<"|      OTRA CANTIDAD DE RETIRO        |                                   |";
+    GoToXY(38,27); cout<<"+=========================================================================+";
+
+    GoToXY(95,26); cin>>retiro;
+
+    calc(saldo,retiro);
+
+}
+
+void deposito_local()
+{
+    int respuesta = 0;
+    do
+    {
+        system("cls");
+        system("color 0A");
+        marcos();
+        head();
+
+        GoToXY(38,25); cout<<"+==============================================================+";
+        GoToXY(38,26); cout<<"|    INDICAR CANTIDAD   |                                      |";
+        GoToXY(38,27); cout<<"|        EXACTA DE      |                                      |";
+        GoToXY(38,28); cout<<"|        DEPOSITO       |                                      |";
+        GoToXY(38,29); cout<<"+==============================================================+";
+
+        GoToXY(70,27); cin>>deposito;
+
+        //calculos correspondiente a los depositos
+
+            if(deposito <= 0)
+            {
+                errors();
+                GoToXY(40,24); cout<<"+============================================================+";
+                GoToXY(40,25); cout<<"|        LA CANTIDAD DE DEPOSITO DEBE SER MAYOR A 0          |";
+                GoToXY(40,26); cout<<"+============================================================+";
+                GoToXY(50,29); cout<<"*"; system("pause");
+            }
+            else
+            {
+                saldo = saldo + deposito;
+                exito();
+
+                GoToXY(48,29); cout<<"+============================================+";
+                GoToXY(48,30); cout<<"| 1 | REALIZAR OTRO DEPOSITO |               |";
+                GoToXY(48,31); cout<<"| 2 |      SALIR             |               |";
+                GoToXY(48,32); cout<<"+============================================+";
+
+                GoToXY(80,30); cin>>respuesta;
+
+            }
+        //
+    }
+    while((respuesta == 1) || (deposito <= 0));
+}
+
+void deposito_ex()
+{
+    char cuenta[14];
+    int respuesta;
+
+    do
+    {
+
+        do
+        {
+            system("cls");
+            system("color 0A");
+            marcos();
+            head();
+
+            GoToXY(38,22); cout<<"+==============================================================+";
+            GoToXY(38,23); cout<<"|          INDIQUE EL NUMERO DE CUENTA BENEFICIARIA            |";
+            GoToXY(38,24); cout<<"+==============================================================+";
+            GoToXY(38,25); cout<<"|                                                              |";
+            GoToXY(38,26); cout<<"+==============================================================+";
+            GoToXY(38,27); cout<<"|    INDICAR CANTIDAD   |                                      |";
+            GoToXY(38,28); cout<<"|        EXACTA DE      |                                      |";
+            GoToXY(38,29); cout<<"|        DEPOSITO       |                                      |";
+            GoToXY(38,30); cout<<"+==============================================================+";
+
+            GoToXY(58,25); cin>>cuenta;
+            GoToXY(70,28); cin>>deposito;
+
+            if(deposito <= 0)
+            {
+                errors();
+                GoToXY(40,24); cout<<"+============================================================+";
+                GoToXY(40,25); cout<<"|        LA CANTIDAD DE DEPOSITO DEBE SER MAYOR A 0          |";
+                GoToXY(40,26); cout<<"+============================================================+";
+                GoToXY(50,29); cout<<"*"; system("pause");
+            }
+
+        }
+        while(deposito <= 0);
+
+        exito();
+        GoToXY(48,28); cout<<"+=====================================================+";
+        GoToXY(48,29); cout<<"| ENVIADO A |                                         |";
+        GoToXY(48,30); cout<<"+=====================================================+";
+        GoToXY(48,31); cout<<"+=====================================================+";
+        GoToXY(48,32); cout<<"| LA CANTIDAD DE |                                    |";
+        GoToXY(48,33); cout<<"+=====================================================+";
+
+        GoToXY(65,29); cout<<cuenta;
+        GoToXY(75,32); cout<<deposito;
+
+        do{
+            GoToXY(48,35); cout<<"+============================================+";
+            GoToXY(48,36); cout<<"| 1 | REALIZAR OTRO DEPOSITO |               |";
+            GoToXY(48,37); cout<<"| 2 |      SALIR             |               |";
+            GoToXY(48,38); cout<<"+============================================+";
+            GoToXY(80,36); cin>>respuesta;
+
+            if(respuesta > 2)
+            {
+                errors();
+                GoToXY(40,28); cout<<"*"; system("pause");
+            }
+        }
+        while(respuesta > 2);
+        
+    }
+    while(respuesta == 1);
+
+    
+}
+
+void prestamo()
+{
+
+}
+
+void edocta()
+{
+
+}
